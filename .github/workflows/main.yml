@@ -28,7 +28,7 @@ jobs:
       # 4. Install project dependencies via uv
       - name: Install dependencies
         run: |
-          uv install
+          uv sync
 
       # 5. Build EXE with PyInstaller
       - name: Build EXE
