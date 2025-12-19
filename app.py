@@ -5,11 +5,17 @@ import yaml
 import json
 import base64
 import io
+from dash import dcc
+import threading
+import os
+import time
+import webbrowser
 
 # Initialize the Dash app
 app = dash.Dash(__name__)
 
 app.layout = html.Div([
+    dcc.Interval(id="heartbeat", interval=3000),
     html.H1("YAML and JSON File Viewer"),
     
     html.H3("Upload a YAML file"),
@@ -86,5 +92,41 @@ def update_json(contents):
     parsed = parse_contents(contents, 'json')
     return json.dumps(parsed, indent=2)
 
-if __name__ == '__main__':
-    app.run(debug=True)
+# -----------------------------
+# Auto-close logic
+# -----------------------------
+last_seen = time.time()
+
+@app.callback(
+    Output("heartbeat", "disabled"),
+    Input("heartbeat", "n_intervals"),
+)
+def heartbeat(_):
+    global last_seen
+    last_seen = time.time()
+    return False
+
+def watchdog():
+    while True:
+        time.sleep(5)
+        if time.time() - last_seen > 10:
+            os._exit(0) 
+
+# -----------------------------
+# Auto-open browser
+# -----------------------------
+def open_browser():
+    webbrowser.open("http://127.0.0.1:8050")
+
+# -----------------------------
+# Entry point
+# -----------------------------
+if __name__ == "__main__":
+    threading.Thread(target=watchdog, daemon=True).start()
+    threading.Timer(1, open_browser).start()
+
+    app.run_server(
+        host="127.0.0.1",
+        port=8050,
+        debug=False
+    )

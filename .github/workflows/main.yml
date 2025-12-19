@@ -34,7 +34,7 @@ jobs:
       - name: Build EXE
         run: |
           pip install pyinstaller  # ensure PyInstaller is installed
-          pyinstaller --onefile --icon=logo/logo.ico app.py
+          pyinstaller --onefile --noconsole --icon=logo/logo.ico app.py
 
       # 6. Create GitHub Release and upload EXE
       - name: Create GitHub Release
