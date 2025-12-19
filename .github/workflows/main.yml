@@ -41,4 +41,4 @@ jobs:
         with:
           tag: v${{ github.run_number }}
           name: Release ${{ github.run_number }}
-          files: dist/app.exe
+          artifacts: dist/app.exe
