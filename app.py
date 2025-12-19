@@ -125,7 +125,7 @@ if __name__ == "__main__":
     threading.Thread(target=watchdog, daemon=True).start()
     threading.Timer(1, open_browser).start()
 
-    app.run_server(
+    app.run(
         host="127.0.0.1",
         port=8050,
         debug=False
